@@ -1,0 +1,4 @@
+#!/bin/sh
+if [ "$IFACE" = {{ item.interface }} ]; then
+  ip route add {{ item.net }}{{ item.mask}} via {{ item.gw }} dev {{ item.interface }}
+fi

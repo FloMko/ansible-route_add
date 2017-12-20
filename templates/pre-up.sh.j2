@@ -1,0 +1,11 @@
+#!/bin/sh
+
+if [ "$IFACE" = vl99 ]; then
+  echo "vl99 up" >> /var/log/up.log
+  ip route add  10.78.1.0/24 via 10.78.222.254 dev vl99
+  ip route add 10.78.15.0/24 via 10.78.222.254 dev vl99
+  ip route add 192.168.127.0/24 via 10.78.222.254 dev vl99
+  ip route add 192.168.111.0/24 via 10.78.222.254 dev vl99
+  ip route add 10.78.28.0/24 via 10.78.222.254 dev vl99
+  ip route add 10.78.25.0/24 via 10.78.222.254 dev vl99
+fi

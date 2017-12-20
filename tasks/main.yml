@@ -1,0 +1,31 @@
+---
+# tasks file for opt/m10m/roles/route.add
+- name: "create post up action"
+  template:
+    src: up.sh.j2
+    dest: /etc/network/if-up.d/{{ item.net | replace(".", "") }}
+    mode: "+x"
+  with_items: "{{ static_routes }}"
+  when: static_routes
+
+- name: "create rt_table"
+  shell: echo "{{item.metric}}" "{{item.interface}}" >> /etc/iproute2/rt_tables
+  with_items: "{{ multiply_default }}"
+  when: multiply_default
+
+- name: "create source-based rule"
+  shell: ip rule add from "{{item.mask}}" lookup "{{item.interface}}"
+  with_items: "{{ multiply_default }}"
+  when: multiply_default
+
+
+- name: "multiply google route"
+  shell: ip route add default via "{{item.gw}}"  dev "{{item.interface}}" table "{{item.interface}}"
+  with_items: "{{ multiply_default }}"
+  when: multiply_default
+
+- name: "restart network for apply route"
+  service:
+    name: networking
+    state: restarted
+  when: static_routes
